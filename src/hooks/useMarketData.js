@@ -187,29 +187,29 @@ function useMarketData() {
       },
 
       yeniCeyrek: {
-        buy: 1.6283094709220012 * safetyBuffer,
+        buy: 1.6219094709220012 * safetyBuffer,
         sell: 1.6654422660467652 * safetyBuffer,
       },
       eskiCeyrek: {
-        buy: 1.6153094709220012 * safetyBuffer,
+        buy: 1.6113094709220012 * safetyBuffer,
         sell: 1.6514422660467652 * safetyBuffer,
       },
 
       yeniYarim: {
-        buy: 3.26666663934835 * safetyBuffer,
+        buy: 3.24666663934835 * safetyBuffer,
         sell: 3.320836834589182 * safetyBuffer,
       },
       eskiYarim: {
-        buy: 3.23666663934835 * safetyBuffer,
+        buy: 3.20666663934835 * safetyBuffer,
         sell: 3.286836834589182 * safetyBuffer,
       },
 
       yeniTam: {
-        buy: 6.5532830549009855 * safetyBuffer,
+        buy: 6.4732830549009855 * safetyBuffer,
         sell: 6.6316259716740165 * safetyBuffer,
       },
       eskiTam: {
-        buy: 6.4932830549009855 * safetyBuffer,
+        buy: 6.4232830549009855 * safetyBuffer,
         sell: 6.5616259716740165 * safetyBuffer,
       },
 
@@ -242,8 +242,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.gram.buy,
           PRODUCT_COEFFICIENTS.gram.sell,
-          0,
-          0
+          100,
+          100
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -266,8 +266,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniCeyrek.buy,
           PRODUCT_COEFFICIENTS.yeniCeyrek.sell,
-          100,
-          150
+          200,
+          0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -278,8 +278,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiCeyrek.buy,
           PRODUCT_COEFFICIENTS.eskiCeyrek.sell,
-          120,
-          170
+          180,
+          0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -290,8 +290,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniYarim.buy,
           PRODUCT_COEFFICIENTS.yeniYarim.sell,
-          150,
-          150
+          400,
+          30
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -302,8 +302,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiYarim.buy,
           PRODUCT_COEFFICIENTS.eskiYarim.sell,
-          180,
-          180
+          250,
+          150
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -314,8 +314,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniTam.buy,
           PRODUCT_COEFFICIENTS.yeniTam.sell,
-          250,
-          300
+          500,
+          0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -326,8 +326,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiTam.buy,
           PRODUCT_COEFFICIENTS.eskiTam.sell,
-          300,
-          350
+          400,
+          200
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -338,8 +338,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniAta.buy,
           PRODUCT_COEFFICIENTS.yeniAta.sell,
-          300,
-          350
+          500,
+          0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -350,8 +350,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiAta.buy,
           PRODUCT_COEFFICIENTS.eskiAta.sell,
-          350,
-          400
+          450,
+          450
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
