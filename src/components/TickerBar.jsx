@@ -3,14 +3,18 @@ function TickerBar({ marketState }) {
 
   const selectedTickerData = marketData.filter((item) =>
     [
-      'Ons Altın',
       'Has Altın',
+      'Ons Altın',
       'Gram Altın',
-      '22 Ayar',
-      'Çeyrek Altın',
-      'Yarım Altın',
-      'Tam Altın',
-      'Ata Altın',
+      '22 Ayar Gram',
+      'Yeni Çeyrek',
+      'Eski Çeyrek',
+      'Yeni Yarım',
+      'Eski Yarım',
+      'Yeni Tam',
+      'Eski Tam',
+      'Yeni Ata',
+      'Eski Ata',
     ].includes(item.name)
   )
 

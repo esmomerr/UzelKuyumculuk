@@ -175,6 +175,25 @@ a {
   box-shadow: var(--shadow-soft);
 }
 
+.custom-table-scroll {
+  max-height: 420px; /* 6 satır için ideal */
+  overflow-y: auto;
+}
+
+/* Scrollbar görünümü (şık olsun diye) */
+.custom-table-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-table-scroll::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 10px;
+}
+
+.custom-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .market-section,
 .services-section {
   background: var(--bg-soft);
@@ -266,7 +285,7 @@ a {
   align-items: center;
   gap: 24px;
   width: max-content;
-  animation: tickerMove 75s linear infinite;
+  animation: tickerMove 40s linear infinite;
   padding: 14px 0;
 }
 

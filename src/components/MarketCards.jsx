@@ -1,15 +1,20 @@
 function MarketCards({ marketState }) {
-  const { marketData, getChangeStyles } = marketState
+  const { marketData, getChangeStyles, refreshKey } = marketState
 
   const selectedMarkets = marketData.filter((item) =>
     [
       'Has Altın',
+      'Ons Altın',
       'Gram Altın',
-      '22 Ayar',
-      'Çeyrek Altın',
-      'Yarım Altın',
-      'Tam Altın',
-      'Ata Altın',
+      '22 Ayar Gram',
+      'Yeni Çeyrek',
+      'Eski Çeyrek',
+      'Yeni Yarım',
+      'Eski Yarım',
+      'Yeni Tam',
+      'Eski Tam',
+      'Yeni Ata',
+      'Eski Ata',
     ].includes(item.name)
   )
 
@@ -21,12 +26,15 @@ function MarketCards({ marketState }) {
           <p>Piyasadaki temel verileri sade kart yapısıyla sunan modern alan.</p>
         </div>
 
-        <div className="row g-4">
-          {selectedMarkets.map((item, index) => {
+        <div className="row g-4" key={refreshKey}>
+          {selectedMarkets.map((item) => {
             const changeStyles = getChangeStyles(item.changeValue)
 
             return (
-              <div className="col-md-6 col-xl-3" key={index}>
+              <div
+                className="col-md-6 col-xl-3"
+                key={`${item.name}-${item.buy}-${item.sell}-${refreshKey}`}
+              >
                 <div className="market-card">
                   <h5>{item.name}</h5>
                   <p>Alış: {item.buy}</p>
