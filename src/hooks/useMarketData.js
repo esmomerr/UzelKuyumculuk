@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { getGoldPrice } from '../services/goldApi'
 import { getUsdToTry } from '../services/usdApi'
 
-function useMarketData() {
+function useMarketData(adminSettings) {
   const [goldData, setGoldData] = useState(null)
   const [usdTryData, setUsdTryData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -19,9 +19,6 @@ function useMarketData() {
           getGoldPrice(),
           getUsdToTry(),
         ])
-
-        console.log('Güncel altın verisi:', goldResponse)
-        console.log('USD/TRY verisi:', usdResponse)
 
         const ouncePrice = Number(goldResponse?.price) || 0
         const usdTry = Number(usdResponse?.rates?.TRY) || 0
@@ -162,6 +159,23 @@ function useMarketData() {
     }
   }
 
+  const createHurdaPair = (basePrice, milyem, buyOffset = 0) => {
+    if (!basePrice) {
+      return {
+        buy: 'Yükleniyor...',
+        sell: '-',
+      }
+    }
+
+    const rawBuy = basePrice * milyem
+    const finalBuy = rawBuy - buyOffset
+
+    return {
+      buy: roundBuyToTen(finalBuy),
+      sell: '-',
+    }
+  }
+
   const marketData = useMemo(() => {
     const ouncePrice = Number(goldData?.price) || 0
     const usdTry = Number(usdTryData?.rates?.TRY) || 0
@@ -178,72 +192,54 @@ function useMarketData() {
 
     const PRODUCT_COEFFICIENTS = {
       gram: {
-        buy: 0.9909112088190092 * safetyBuffer,
-        sell: 1.0047828561271857 * safetyBuffer,
+        buy: 0.9935112088190092 * safetyBuffer,
+        sell: 1.0057828561271857 * safetyBuffer,
       },
       ayar22: {
-        buy: 0.9032588818799928 * safetyBuffer,
-        sell: 0.9440408842432925 * safetyBuffer,
+        buy: 0.9092588818799928 * safetyBuffer,
+        sell: 0.9500408842432925 * safetyBuffer,
       },
-
       yeniCeyrek: {
-        buy: 1.6219094709220012 * safetyBuffer,
-        sell: 1.6654422660467652 * safetyBuffer,
+        buy: 1.6293094709220012 * safetyBuffer,
+        sell: 1.6454422660467652 * safetyBuffer,
       },
       eskiCeyrek: {
-        buy: 1.6113094709220012 * safetyBuffer,
-        sell: 1.6514422660467652 * safetyBuffer,
+        buy: 1.6253094709220012 * safetyBuffer,
+        sell: 1.635422660467652 * safetyBuffer,
       },
-
       yeniYarim: {
-        buy: 3.24666663934835 * safetyBuffer,
-        sell: 3.320836834589182 * safetyBuffer,
+        buy: 3.2566666663934835 * safetyBuffer,
+        sell: 3.288836834589182 * safetyBuffer,
       },
       eskiYarim: {
-        buy: 3.20666663934835 * safetyBuffer,
-        sell: 3.286836834589182 * safetyBuffer,
+        buy: 3.22766663934835 * safetyBuffer,
+        sell: 3.260836834589182 * safetyBuffer,
       },
-
       yeniTam: {
-        buy: 6.4732830549009855 * safetyBuffer,
-        sell: 6.6316259716740165 * safetyBuffer,
+        buy: 6.4902830549009855 * safetyBuffer,
+        sell: 6.5556259716740165 * safetyBuffer,
       },
       eskiTam: {
         buy: 6.4232830549009855 * safetyBuffer,
-        sell: 6.5616259716740165 * safetyBuffer,
+        sell: 6.4726259716740165 * safetyBuffer,
       },
-
-      yeniAta: {
-        buy: 6.652449460704767 * safetyBuffer,
-        sell: 6.761226707599663 * safetyBuffer,
-      },
-      eskiAta: {
-        buy: 6.582449460704767 * safetyBuffer,
-        sell: 6.681226707599663 * safetyBuffer,
+      ataAltin: {
+        buy: 6.689449460704767 * safetyBuffer,
+        sell: 6.665226707599663 * safetyBuffer,
       },
     }
 
+    const gram24Base = hasAltinGramTl
+
     return [
       {
-        name: 'Has Altın',
-        ...createDisplayPair(hasAltinGramTl, 0.998, 1.0025, 150, 100),
-        change: formatChange(dailyChangePercent),
-        changeValue: dailyChangePercent,
-      },
-      {
-        name: 'Ons Altın',
-        ...createDisplayPair(ouncePrice, 0.9985, 1.0015, 0, 0),
-        change: formatChange(dailyChangePercent),
-        changeValue: dailyChangePercent,
-      },
-      {
-        name: 'Gram Altın',
+        name: '24 Ayar Gram',
         ...createDisplayPair(
-          hasAltinGramTl,
+          gram24Base,
           PRODUCT_COEFFICIENTS.gram.buy,
           PRODUCT_COEFFICIENTS.gram.sell,
-          100,
-          100
+          Number(adminSettings?.gramAltin?.buyOffset) || 0,
+          Number(adminSettings?.gramAltin?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -254,8 +250,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.ayar22.buy,
           PRODUCT_COEFFICIENTS.ayar22.sell,
-          100,
-          100
+          Number(adminSettings?.ayar22?.buyOffset) || 0,
+          Number(adminSettings?.ayar22?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -266,8 +262,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniCeyrek.buy,
           PRODUCT_COEFFICIENTS.yeniCeyrek.sell,
-          200,
-          0
+          Number(adminSettings?.yeniCeyrek?.buyOffset) || 0,
+          Number(adminSettings?.yeniCeyrek?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -278,8 +274,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiCeyrek.buy,
           PRODUCT_COEFFICIENTS.eskiCeyrek.sell,
-          180,
-          0
+          Number(adminSettings?.eskiCeyrek?.buyOffset) || 0,
+          Number(adminSettings?.eskiCeyrek?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -290,8 +286,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniYarim.buy,
           PRODUCT_COEFFICIENTS.yeniYarim.sell,
-          400,
-          30
+          Number(adminSettings?.yeniYarim?.buyOffset) || 0,
+          Number(adminSettings?.yeniYarim?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -302,8 +298,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiYarim.buy,
           PRODUCT_COEFFICIENTS.eskiYarim.sell,
-          250,
-          150
+          Number(adminSettings?.eskiYarim?.buyOffset) || 0,
+          Number(adminSettings?.eskiYarim?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -314,8 +310,8 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.yeniTam.buy,
           PRODUCT_COEFFICIENTS.yeniTam.sell,
-          500,
-          0
+          Number(adminSettings?.yeniTam?.buyOffset) || 0,
+          Number(adminSettings?.yeniTam?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
@@ -326,38 +322,66 @@ function useMarketData() {
           hasAltinGramTl,
           PRODUCT_COEFFICIENTS.eskiTam.buy,
           PRODUCT_COEFFICIENTS.eskiTam.sell,
-          400,
-          200
+          Number(adminSettings?.eskiTam?.buyOffset) || 0,
+          Number(adminSettings?.eskiTam?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
       },
       {
-        name: 'Yeni Ata',
+        name: 'Ata Altın',
         ...createDisplayPair(
           hasAltinGramTl,
-          PRODUCT_COEFFICIENTS.yeniAta.buy,
-          PRODUCT_COEFFICIENTS.yeniAta.sell,
-          500,
-          0
+          PRODUCT_COEFFICIENTS.ataAltin.buy,
+          PRODUCT_COEFFICIENTS.ataAltin.sell,
+          Number(adminSettings?.ataAltin?.buyOffset) || 0,
+          Number(adminSettings?.ataAltin?.sellOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
       },
       {
-        name: 'Eski Ata',
-        ...createDisplayPair(
-          hasAltinGramTl,
-          PRODUCT_COEFFICIENTS.eskiAta.buy,
-          PRODUCT_COEFFICIENTS.eskiAta.sell,
-          450,
-          450
+        name: '8 Ayar Hurda',
+        ...createHurdaPair(
+          gram24Base,
+          0.25,
+          Number(adminSettings?.hurda8?.buyOffset) || 0
+        ),
+        change: formatChange(dailyChangePercent),
+        changeValue: dailyChangePercent,
+      },
+      {
+        name: '14 Ayar Hurda',
+        ...createHurdaPair(
+          gram24Base,
+          0.475,
+          Number(adminSettings?.hurda14?.buyOffset) || 0
+        ),
+        change: formatChange(dailyChangePercent),
+        changeValue: dailyChangePercent,
+      },
+      {
+        name: '18 Ayar Hurda',
+        ...createHurdaPair(
+          gram24Base,
+          0.675,
+          Number(adminSettings?.hurda18?.buyOffset) || 0
+        ),
+        change: formatChange(dailyChangePercent),
+        changeValue: dailyChangePercent,
+      },
+      {
+        name: '22 Ayar Hurda',
+        ...createHurdaPair(
+          gram24Base,
+          0.875,
+          Number(adminSettings?.hurda22?.buyOffset) || 0
         ),
         change: formatChange(dailyChangePercent),
         changeValue: dailyChangePercent,
       },
     ]
-  }, [goldData, usdTryData, dailyBasePrice, refreshKey])
+  }, [goldData, usdTryData, dailyBasePrice, refreshKey, adminSettings])
 
   return {
     marketData,

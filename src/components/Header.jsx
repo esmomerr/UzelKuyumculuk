@@ -1,9 +1,33 @@
+import { useLocation, useNavigate } from 'react-router-dom'
+
 function Header({ theme, toggleTheme }) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const scrollToSection = (id) => {
+    if (location.pathname !== '/') {
+      navigate('/')
+      setTimeout(() => {
+        const section = document.getElementById(id)
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 150)
+      return
+    }
+
     const section = document.getElementById(id)
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  const goHome = () => {
+    if (location.pathname !== '/') {
+      navigate('/')
+      return
+    }
+    scrollToSection('home')
   }
 
   return (
@@ -12,7 +36,7 @@ function Header({ theme, toggleTheme }) {
         <span
           className="navbar-brand fw-bold"
           style={{ cursor: 'pointer' }}
-          onClick={() => scrollToSection('home')}
+          onClick={goHome}
         >
           Uzel Kuyumculuk
         </span>
@@ -63,8 +87,12 @@ function Header({ theme, toggleTheme }) {
                 className="theme-toggle-btn ms-lg-2"
                 onClick={toggleTheme}
                 type="button"
+                aria-label="Tema değiştir"
+                title="Tema değiştir"
               >
-                {theme === 'dark' ? '☀️' : '🌙'}
+                <span className="theme-toggle-icon">
+                  {theme === 'dark' ? '☀' : '☾'}
+                </span>
               </button>
             </li>
           </ul>
