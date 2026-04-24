@@ -178,16 +178,9 @@ function AdminPanel({
               <button
                 type="button"
                 className="admin-step-btn"
-                onClick={() => handleStepChange(product.key, 'buyOffset', -1)}
+                onClick={() => handleStepChange(product.key, 'buyOffset', -50)}
               >
-                -1
-              </button>
-              <button
-                type="button"
-                className="admin-step-btn"
-                onClick={() => handleStepChange(product.key, 'buyOffset', 1)}
-              >
-                +1
+                -50
               </button>
               <button
                 type="button"
@@ -195,6 +188,13 @@ function AdminPanel({
                 onClick={() => handleStepChange(product.key, 'buyOffset', 10)}
               >
                 +10
+              </button>
+              <button
+                type="button"
+                className="admin-step-btn"
+                onClick={() => handleStepChange(product.key, 'buyOffset', 50)}
+              >
+                +50
               </button>
             </div>
 
@@ -220,16 +220,9 @@ function AdminPanel({
                   <button
                     type="button"
                     className="admin-step-btn"
-                    onClick={() => handleStepChange(product.key, 'sellOffset', -1)}
+                    onClick={() => handleStepChange(product.key, 'sellOffset', -50)}
                   >
-                    -1
-                  </button>
-                  <button
-                    type="button"
-                    className="admin-step-btn"
-                    onClick={() => handleStepChange(product.key, 'sellOffset', 1)}
-                  >
-                    +1
+                    -50
                   </button>
                   <button
                     type="button"
@@ -237,6 +230,13 @@ function AdminPanel({
                     onClick={() => handleStepChange(product.key, 'sellOffset', 10)}
                   >
                     +10
+                  </button>
+                  <button
+                    type="button"
+                    className="admin-step-btn"
+                    onClick={() => handleStepChange(product.key, 'sellOffset', 50)}
+                  >
+                    +50
                   </button>
                 </div>
               </>
