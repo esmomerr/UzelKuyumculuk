@@ -21,11 +21,6 @@ function Hero({ marketState }) {
               Güçlü arayüz, sade tasarım ve yatırım odaklı panel yapısıyla
               kullanıcıların piyasayı hızlıca takip edebileceği modern bir deneyim.
             </p>
-
-            <div className="d-flex gap-3 mt-4 flex-wrap">
-              <button className="btn btn-gold">Canlı Fiyatlar</button>
-              <button className="btn btn-outline-light-custom">Grafik İncele</button>
-            </div>
           </div>
 
           <div className="col-lg-7 mt-5 mt-lg-0">
