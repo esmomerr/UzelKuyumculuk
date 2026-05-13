@@ -93,7 +93,6 @@ function App() {
         const user = await getCurrentUser()
         setIsAdminAuthenticated(!!user)
       } catch (error) {
-        console.error('Kullanıcı kontrol hatası:', error)
         setIsAdminAuthenticated(false)
       } finally {
         setAuthLoading(false)

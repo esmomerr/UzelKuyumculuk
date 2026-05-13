@@ -78,23 +78,14 @@ function useMarketData(adminSettings) {
     }).format(value)
   }
 
-  const roundBuyToTen = (value) => {
-    if (value === null || value === undefined || Number.isNaN(value)) {
-      return 'Yükleniyor...'
-    }
-
-    const roundedValue = Math.floor(value / 10) * 10
-    return formatNumber(roundedValue)
+  const roundPriceToFifty = (value) => {
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return 'Yükleniyor...'
   }
 
-  const roundSellToTen = (value) => {
-    if (value === null || value === undefined || Number.isNaN(value)) {
-      return 'Yükleniyor...'
-    }
-
-    const roundedValue = Math.ceil(value / 10) * 10
-    return formatNumber(roundedValue)
-  }
+  const roundedValue = Math.round(value / 50) * 50
+  return formatNumber(roundedValue)
+}
 
   const formatChange = (value) => {
     if (value === null || value === undefined || Number.isNaN(value)) {
@@ -154,8 +145,8 @@ function useMarketData(adminSettings) {
     const finalSell = rawSell + sellOffset
 
     return {
-      buy: roundBuyToTen(finalBuy),
-      sell: roundSellToTen(finalSell),
+      buy: roundPriceToFifty(finalBuy),
+      sell: roundPriceToFifty(finalSell),
     }
   }
 
@@ -171,7 +162,7 @@ function useMarketData(adminSettings) {
     const finalBuy = rawBuy - buyOffset
 
     return {
-      buy: roundBuyToTen(finalBuy),
+      buy: roundPriceToFifty(finalBuy),
       sell: '-',
     }
   }
