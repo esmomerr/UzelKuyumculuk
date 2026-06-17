@@ -5,8 +5,10 @@ function Hero({ marketState }) {
     error,
     getChangeStyles,
     refreshKey,
+    lastUpdateTime,
+    isLive,
   } = marketState
-
+    
   return (
     <section id="home" className="hero-section">
       <div className="container">
@@ -32,7 +34,19 @@ function Hero({ marketState }) {
                 >
                   Öne Çıkan Piyasalar
                 </span>
-                <span className="text-success">Canlı</span>
+                <div className="live-status">
+                  <span className={`live-dot ${!isLive ? 'offline' : ''}`}></span>
+
+                  <div className="live-info">
+                    <span className={`live-text ${!isLive ? 'offline' : ''}`}>
+                      {isLive ? 'Canlı' : 'Bağlantı Kesildi'}
+                    </span>
+
+                    <small className="live-time">
+                      Son Güncelleme: {lastUpdateTime}
+                    </small>
+                  </div>
+                </div>
               </div>
 
               <div className="px-4 pb-2">

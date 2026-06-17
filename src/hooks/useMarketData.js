@@ -374,17 +374,19 @@ function useMarketData(adminSettings) {
     ]
   }, [goldData, usdTryData, dailyBasePrice, refreshKey, adminSettings])
 
-  return {
-    marketData,
-    goldData,
-    usdTryData,
-    loading,
-    error,
-    dailyBasePrice,
-    formatNumber,
-    getChangeStyles,
-    refreshKey,
-  }
+    return {
+      marketData,
+      goldData,
+      usdTryData,
+      loading,
+      error,
+      dailyBasePrice,
+      formatNumber,
+      getChangeStyles,
+      refreshKey,
+      lastUpdateTime: new Date().toLocaleTimeString('tr-TR'),
+      isLive: !error,
+}
 }
 
 export default useMarketData

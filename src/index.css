@@ -961,3 +961,60 @@ a {
   color: var(--text-soft);
   font-size: 14px;
 }
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.live-text {
+  color: #22c55e !important;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.live-time {
+  color: var(--text-soft);
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  animation: livePulse 1.5s infinite;
+}
+
+.live-dot.offline {
+  background-color: #ef4444;
+  animation: none;
+}
+
+.live-text.offline {
+  color: #ef4444 !important;
+}
+
+@keyframes livePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
