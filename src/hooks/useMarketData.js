@@ -374,6 +374,23 @@ function useMarketData(adminSettings) {
     ]
   }, [goldData, usdTryData, dailyBasePrice, refreshKey, adminSettings])
 
+  const isLive = !error
+
+  const now = new Date()
+  const day = now.getDay()
+  const isWeekend = day === 0 || day === 6
+
+  let statusText = 'Canlı'
+  let statusType = 'live'
+
+  if (!isLive) {
+    statusText = 'Bağlantı Kesildi'
+    statusType = 'offline'
+  } else if (isWeekend) {
+    statusText = 'Hafta Sonu (Fiyatlar Sabit)'
+    statusType = 'weekend'
+  }
+
     return {
       marketData,
       goldData,
@@ -386,6 +403,10 @@ function useMarketData(adminSettings) {
       refreshKey,
       lastUpdateTime: new Date().toLocaleTimeString('tr-TR'),
       isLive: !error,
+      isLive,
+      statusText,
+      statusType,
+      lastUpdateTime: new Date().toLocaleTimeString('tr-TR'),
 }
 }
 
