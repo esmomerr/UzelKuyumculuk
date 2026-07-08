@@ -11,6 +11,9 @@ import useMarketData from './hooks/useMarketData'
 import { getMarketSettings } from './lib/marketSettings'
 import { supabase } from './lib/supabase'
 import { getCurrentUser } from './lib/auth'
+import InstallGuide from './components/InstallGuide'
+import SplashScreen from './components/SplashScreen'
+import OfflineBanner from './components/OfflineBanner'
 
 const defaultAdminSettings = {
   gramAltin: { buyOffset: 0, sellOffset: 0 },
@@ -31,6 +34,9 @@ const defaultAdminSettings = {
 function HomePage({ marketState, theme, toggleTheme }) {
   return (
     <>
+      <InstallGuide />
+      <SplashScreen />
+      <OfflineBanner />
       <Header theme={theme} toggleTheme={toggleTheme} />
       <Hero marketState={marketState} />
       <TickerBar marketState={marketState} />
