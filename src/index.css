@@ -1178,3 +1178,16 @@ a {
     transform: rotate(360deg);
   }
 }
+
+.navbar-toggler {
+  border-color: var(--border-color);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+
+[data-theme='light'] .navbar-toggler-icon {
+  filter: invert(0);
+}

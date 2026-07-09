@@ -1,32 +1,69 @@
+import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 function Header({ theme, toggleTheme }) {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const scrollToSection = (id) => {
-    if (location.pathname !== '/') {
-      navigate('/')
-      setTimeout(() => {
-        const section = document.getElementById(id)
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth' })
-        }
-      }, 150)
-      return
-    }
+  const closeMobileMenu = () => {
+    const navbarCollapse = document.getElementById('navbarNav')
 
-    const section = document.getElementById(id)
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' })
+    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+      navbarCollapse.classList.remove('show')
     }
   }
 
+  useEffect(() => {
+    if (location.hash === '#contact') {
+      setTimeout(() => {
+        const footer = document.getElementById('contact')
+        if (footer) {
+          footer.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 300)
+    }
+  }, [location])
+
+  const scrollToSection = (id) => {
+    closeMobileMenu()
+
+    if (id === 'contact') {
+      window.location.href = '/#contact'
+      return
+    }
+
+    const doScroll = () => {
+      const section = document.getElementById(id)
+
+      if (section) {
+        section.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      }
+    }
+
+    if (location.pathname !== '/') {
+      navigate('/')
+
+      setTimeout(() => {
+        doScroll()
+      }, 400)
+
+      return
+    }
+
+    doScroll()
+  }
+
   const goHome = () => {
+    closeMobileMenu()
+
     if (location.pathname !== '/') {
       navigate('/')
       return
     }
+
     scrollToSection('home')
   }
 
@@ -46,6 +83,9 @@ function Header({ theme, toggleTheme }) {
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Menüyü aç/kapat"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -85,7 +125,10 @@ function Header({ theme, toggleTheme }) {
             <li className="nav-item">
               <button
                 className="theme-toggle-btn ms-lg-2"
-                onClick={toggleTheme}
+                onClick={() => {
+                  closeMobileMenu()
+                  toggleTheme()
+                }}
                 type="button"
                 aria-label="Tema değiştir"
                 title="Tema değiştir"
