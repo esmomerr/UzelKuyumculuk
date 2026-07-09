@@ -35,7 +35,6 @@ function HomePage({ marketState, theme, toggleTheme }) {
   return (
     <>
       <InstallGuide />
-      <SplashScreen />
       <OfflineBanner />
       <Header theme={theme} toggleTheme={toggleTheme} />
       <Hero marketState={marketState} />
@@ -183,35 +182,50 @@ function App() {
   }
 
   if (settingsLoading || authLoading) {
-    return <div style={{ padding: '40px' }}>Yükleniyor...</div>
-  }
+  return (
+    <>
+      <SplashScreen />
+      <div className="app-loading-screen">
+        <div className="app-loading-card">
+          <div className="app-loading-spinner"></div>
+          <h2>Yükleniyor...</h2>
+          <p>Uzel Kuyumculuk</p>
+        </div>
+      </div>
+    </>
+  )
+}
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <HomePage
-            marketState={marketState}
-            theme={theme}
-            toggleTheme={toggleTheme}
-          />
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <AdminPage
-            isAdminAuthenticated={isAdminAuthenticated}
-            setIsAdminAuthenticated={setIsAdminAuthenticated}
-            adminSettings={adminSettings}
-            setAdminSettings={setAdminSettings}
-            theme={theme}
-            toggleTheme={toggleTheme}
-          />
-        }
-      />
-    </Routes>
+    <>
+      <SplashScreen />
+      
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              marketState={marketState}
+              theme={theme}
+              toggleTheme={toggleTheme}
+            />
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminPage
+              isAdminAuthenticated={isAdminAuthenticated}
+              setIsAdminAuthenticated={setIsAdminAuthenticated}
+              adminSettings={adminSettings}
+              setAdminSettings={setAdminSettings}
+              theme={theme}
+              toggleTheme={toggleTheme}
+            />
+          }
+        />
+      </Routes>
+    </>
   )
 }
 

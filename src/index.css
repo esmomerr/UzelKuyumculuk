@@ -1129,3 +1129,52 @@ a {
     left: auto;
   }
 }
+
+
+.app-loading-screen {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(212, 175, 55, 0.16), transparent 35%),
+    var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.app-loading-card {
+  text-align: center;
+  padding: 32px 36px;
+  border-radius: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-soft);
+}
+
+.app-loading-spinner {
+  width: 46px;
+  height: 46px;
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  animation: loadingSpin 0.9s linear infinite;
+}
+
+.app-loading-card h2 {
+  color: var(--text-main);
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.app-loading-card p {
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
+
+@keyframes loadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
