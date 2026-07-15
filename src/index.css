@@ -1191,3 +1191,75 @@ a {
 [data-theme='light'] .navbar-toggler-icon {
   filter: invert(0);
 }
+
+.admin-store-selector {
+  margin-bottom: 26px;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-store-selector label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.admin-store-selector select {
+  width: 100%;
+  max-width: 360px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+}
+
+.admin-store-selector select:focus {
+  border-color: var(--gold);
+}
+
+.admin-store-selector option {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+.admin-store-indicator {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.admin-store-indicator strong {
+  color: var(--gold);
+}
+
+.admin-store-indicator.main {
+  border-left: 3px solid #22c55e;
+  padding-left: 10px;
+}
+
+.admin-store-indicator.carsi {
+  border-left: 3px solid var(--gold);
+  padding-left: 10px;
+}
+
+@media (max-width: 576px) {
+  .admin-store-selector {
+    padding: 16px;
+  }
+
+  .admin-store-selector select {
+    max-width: none;
+  }
+}

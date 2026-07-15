@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { updateMarketSetting } from '../../lib/marketSettings'
+import { updateSecondMarketSetting } from '../../lib/secondMarketSettings'
+
 import { signOutAdmin } from '../../lib/auth'
 import { createMarketLog, getMarketLogs } from '../../lib/marketLogs'
 import { supabase } from '../../lib/supabase'
@@ -8,17 +11,99 @@ import { supabase } from '../../lib/supabase'
 function AdminPanel({
   adminSettings,
   setAdminSettings,
+
+  secondAdminSettings,
+  setSecondAdminSettings,
+
   setIsAdminAuthenticated,
 }) {
   const navigate = useNavigate()
+
+  const [selectedStore, setSelectedStore] = useState('main')
   const [savingKey, setSavingKey] = useState('')
   const [message, setMessage] = useState('')
-  const [draftSettings, setDraftSettings] = useState(adminSettings)
   const [logs, setLogs] = useState([])
 
+  const products = [
+    {
+      key: 'gramAltin',
+      title: '24 Ayar Gram',
+      showSell: true,
+    },
+    {
+      key: 'ayar22',
+      title: '22 Ayar Gram',
+      showSell: true,
+    },
+    {
+      key: 'yeniCeyrek',
+      title: 'Yeni Çeyrek',
+      showSell: true,
+    },
+    {
+      key: 'eskiCeyrek',
+      title: 'Eski Çeyrek',
+      showSell: true,
+    },
+    {
+      key: 'yeniYarim',
+      title: 'Yeni Yarım',
+      showSell: true,
+    },
+    {
+      key: 'eskiYarim',
+      title: 'Eski Yarım',
+      showSell: true,
+    },
+    {
+      key: 'yeniTam',
+      title: 'Yeni Tam',
+      showSell: true,
+    },
+    {
+      key: 'eskiTam',
+      title: 'Eski Tam',
+      showSell: true,
+    },
+    {
+      key: 'ataAltin',
+      title: 'Ata Altın',
+      showSell: true,
+    },
+    {
+      key: 'hurda8',
+      title: '8 Ayar Hurda',
+      showSell: false,
+    },
+    {
+      key: 'hurda14',
+      title: '14 Ayar Hurda',
+      showSell: false,
+    },
+    {
+      key: 'hurda18',
+      title: '18 Ayar Hurda',
+      showSell: false,
+    },
+    {
+      key: 'hurda22',
+      title: '22 Ayar Hurda',
+      showSell: false,
+    },
+  ]
+
+  const activeSettings = useMemo(() => {
+    return selectedStore === 'main'
+      ? adminSettings
+      : secondAdminSettings
+  }, [selectedStore, adminSettings, secondAdminSettings])
+
+  const [draftSettings, setDraftSettings] = useState(activeSettings)
+
   useEffect(() => {
-    setDraftSettings(adminSettings)
-  }, [adminSettings])
+    setDraftSettings(activeSettings)
+    setMessage('')
+  }, [activeSettings, selectedStore])
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -33,40 +118,41 @@ function AdminPanel({
     fetchLogs()
   }, [])
 
-  const products = [
-    { key: 'gramAltin', title: '24 Ayar Gram', showSell: true },
-    { key: 'ayar22', title: '22 Ayar Gram', showSell: true },
-    { key: 'yeniCeyrek', title: 'Yeni Çeyrek', showSell: true },
-    { key: 'eskiCeyrek', title: 'Eski Çeyrek', showSell: true },
-    { key: 'yeniYarim', title: 'Yeni Yarım', showSell: true },
-    { key: 'eskiYarim', title: 'Eski Yarım', showSell: true },
-    { key: 'yeniTam', title: 'Yeni Tam', showSell: true },
-    { key: 'eskiTam', title: 'Eski Tam', showSell: true },
-    { key: 'ataAltin', title: 'Ata Altın', showSell: true },
-    { key: 'hurda8', title: '8 Ayar Hurda', showSell: false },
-    { key: 'hurda14', title: '14 Ayar Hurda', showSell: false },
-    { key: 'hurda18', title: '18 Ayar Hurda', showSell: false },
-    { key: 'hurda22', title: '22 Ayar Hurda', showSell: false },
-  ]
+  const selectedStoreTitle =
+    selectedStore === 'main'
+      ? 'Gebze Center Mağazası'
+      : 'Çarşı Mağazası'
 
-  const handleChange = (product, field, value) => {
-    setDraftSettings((prev) => ({
-      ...prev,
-      [product]: {
-        ...prev[product],
+  const handleStoreChange = (event) => {
+    setSelectedStore(event.target.value)
+  }
+
+  const handleChange = (productKey, field, value) => {
+    setDraftSettings((previousSettings) => ({
+      ...previousSettings,
+
+      [productKey]: {
+        ...previousSettings[productKey],
         [field]: Number(value),
       },
     }))
   }
 
-  const handleStepChange = (product, field, amount) => {
-    setDraftSettings((prev) => {
-      const currentValue = Number(prev[product]?.[field] ?? 0)
+  const handleStepChange = (
+    productKey,
+    field,
+    amount
+  ) => {
+    setDraftSettings((previousSettings) => {
+      const currentValue = Number(
+        previousSettings[productKey]?.[field] ?? 0
+      )
 
       return {
-        ...prev,
-        [product]: {
-          ...prev[product],
+        ...previousSettings,
+
+        [productKey]: {
+          ...previousSettings[productKey],
           [field]: currentValue + amount,
         },
       }
@@ -78,13 +164,64 @@ function AdminPanel({
       setSavingKey(productKey)
       setMessage('')
 
-      const product = products.find((p) => p.key === productKey)
-      const oldBuyOffset = Number(adminSettings[productKey]?.buyOffset ?? 0)
-      const oldSellOffset = Number(adminSettings[productKey]?.sellOffset ?? 0)
-      const newBuyOffset = Number(draftSettings[productKey]?.buyOffset ?? 0)
-      const newSellOffset = Number(draftSettings[productKey]?.sellOffset ?? 0)
+      const product = products.find(
+        (item) => item.key === productKey
+      )
 
-      await updateMarketSetting(productKey, newBuyOffset, newSellOffset)
+      const currentSettings =
+        selectedStore === 'main'
+          ? adminSettings
+          : secondAdminSettings
+
+      const oldBuyOffset = Number(
+        currentSettings[productKey]?.buyOffset ?? 0
+      )
+
+      const oldSellOffset = Number(
+        currentSettings[productKey]?.sellOffset ?? 0
+      )
+
+      const newBuyOffset = Number(
+        draftSettings[productKey]?.buyOffset ?? 0
+      )
+
+      const newSellOffset = product?.showSell
+        ? Number(
+            draftSettings[productKey]?.sellOffset ?? 0
+          )
+        : 0
+
+      if (selectedStore === 'main') {
+        await updateMarketSetting(
+          productKey,
+          newBuyOffset,
+          newSellOffset
+        )
+
+        setAdminSettings((previousSettings) => ({
+          ...previousSettings,
+
+          [productKey]: {
+            buyOffset: newBuyOffset,
+            sellOffset: newSellOffset,
+          },
+        }))
+      } else {
+        await updateSecondMarketSetting(
+          productKey,
+          newBuyOffset,
+          newSellOffset
+        )
+
+        setSecondAdminSettings((previousSettings) => ({
+          ...previousSettings,
+
+          [productKey]: {
+            buyOffset: newBuyOffset,
+            sellOffset: newSellOffset,
+          },
+        }))
+      }
 
       const {
         data: { user },
@@ -92,7 +229,9 @@ function AdminPanel({
 
       await createMarketLog({
         productKey,
-        productTitle: product?.title || productKey,
+        productTitle: `${selectedStoreTitle} - ${
+          product?.title || productKey
+        }`,
         oldBuyOffset,
         oldSellOffset,
         newBuyOffset,
@@ -100,21 +239,18 @@ function AdminPanel({
         adminEmail: user?.email || '',
       })
 
-      setAdminSettings((prev) => ({
-        ...prev,
-        [productKey]: {
-          buyOffset: newBuyOffset,
-          sellOffset: newSellOffset,
-        },
-      }))
-
       const updatedLogs = await getMarketLogs()
       setLogs(updatedLogs)
 
-      setMessage(`${product?.title} kaydedildi`)
+      setMessage(
+        `${selectedStoreTitle} / ${product?.title} kaydedildi`
+      )
     } catch (error) {
       console.error('Kayıt hatası:', error)
-      setMessage('Kayıt sırasında hata oluştu')
+
+      setMessage(
+        'Kayıt sırasında hata oluştu. Console ekranını kontrol et.'
+      )
     } finally {
       setSavingKey('')
     }
@@ -130,7 +266,12 @@ function AdminPanel({
   }
 
   const handleGoHome = () => {
-    navigate('/')
+    if (selectedStore === 'main') {
+      navigate('/')
+      return
+    }
+
+    navigate('/carsi')
   }
 
   return (
@@ -138,32 +279,95 @@ function AdminPanel({
       <div className="admin-panel-top">
         <div>
           <h3>Admin Panel</h3>
-          <p>Buradan ürün alış ve satış farklarını yönetiyorsun.</p>
-          {message && <span className="admin-message">{message}</span>}
+
+          <p>
+            Gebze Center Mağazası ve Çarşı mağazası fiyat
+            farklarını ayrı ayrı yönetebilirsin.
+          </p>
+
+          {message && (
+            <span className="admin-message">
+              {message}
+            </span>
+          )}
         </div>
 
         <div className="admin-panel-actions">
-          <button className="admin-home-btn" onClick={handleGoHome}>
-            Anasayfaya Dön
+          <button
+            className="admin-home-btn"
+            onClick={handleGoHome}
+            type="button"
+          >
+            {selectedStore === 'main'
+              ? 'Gebze Center Mağazasına Git'
+              : 'Çarşı Mağazasına Git'}
           </button>
 
-          <button className="admin-logout-btn" onClick={handleLogout}>
+          <button
+            className="admin-logout-btn"
+            onClick={handleLogout}
+            type="button"
+          >
             Çıkış Yap
           </button>
         </div>
       </div>
 
+      <div className="admin-store-selector">
+        <label htmlFor="store-selector">
+          Fiyat Listesi
+        </label>
+
+        <select
+          id="store-selector"
+          value={selectedStore}
+          onChange={handleStoreChange}
+        >
+          <option value="main">
+            Gebze Center Mağazası
+          </option>
+
+          <option value="carsi">
+            Çarşı Mağazası
+          </option>
+        </select>
+
+        <div
+          className={`admin-store-indicator ${
+            selectedStore === 'main'
+              ? 'main'
+              : 'carsi'
+          }`}
+        >
+          Şu anda düzenlenen liste:
+          <strong>{selectedStoreTitle}</strong>
+        </div>
+      </div>
+
       <div className="admin-grid">
         {products.map((product) => (
-          <div className="admin-card" key={product.key}>
+          <div
+            className="admin-card"
+            key={`${selectedStore}-${product.key}`}
+          >
             <h4>{product.title}</h4>
 
-            <label>Alış Farkı</label>
+            <label>
+              Alış Farkı
+            </label>
+
             <input
               type="number"
-              value={draftSettings[product.key]?.buyOffset ?? 0}
-              onChange={(e) =>
-                handleChange(product.key, 'buyOffset', e.target.value)
+              value={
+                draftSettings[product.key]?.buyOffset ??
+                0
+              }
+              onChange={(event) =>
+                handleChange(
+                  product.key,
+                  'buyOffset',
+                  event.target.value
+                )
               }
             />
 
@@ -171,28 +375,55 @@ function AdminPanel({
               <button
                 type="button"
                 className="admin-step-btn"
-                onClick={() => handleStepChange(product.key, 'buyOffset', -10)}
-              >
-                -10
-              </button>
-              <button
-                type="button"
-                className="admin-step-btn"
-                onClick={() => handleStepChange(product.key, 'buyOffset', -50)}
+                onClick={() =>
+                  handleStepChange(
+                    product.key,
+                    'buyOffset',
+                    -50
+                  )
+                }
               >
                 -50
               </button>
+
               <button
                 type="button"
                 className="admin-step-btn"
-                onClick={() => handleStepChange(product.key, 'buyOffset', 10)}
+                onClick={() =>
+                  handleStepChange(
+                    product.key,
+                    'buyOffset',
+                    -10
+                  )
+                }
+              >
+                -10
+              </button>
+
+              <button
+                type="button"
+                className="admin-step-btn"
+                onClick={() =>
+                  handleStepChange(
+                    product.key,
+                    'buyOffset',
+                    10
+                  )
+                }
               >
                 +10
               </button>
+
               <button
                 type="button"
                 className="admin-step-btn"
-                onClick={() => handleStepChange(product.key, 'buyOffset', 50)}
+                onClick={() =>
+                  handleStepChange(
+                    product.key,
+                    'buyOffset',
+                    50
+                  )
+                }
               >
                 +50
               </button>
@@ -200,12 +431,22 @@ function AdminPanel({
 
             {product.showSell && (
               <>
-                <label>Satış Farkı</label>
+                <label>
+                  Satış Farkı
+                </label>
+
                 <input
                   type="number"
-                  value={draftSettings[product.key]?.sellOffset ?? 0}
-                  onChange={(e) =>
-                    handleChange(product.key, 'sellOffset', e.target.value)
+                  value={
+                    draftSettings[product.key]
+                      ?.sellOffset ?? 0
+                  }
+                  onChange={(event) =>
+                    handleChange(
+                      product.key,
+                      'sellOffset',
+                      event.target.value
+                    )
                   }
                 />
 
@@ -213,28 +454,55 @@ function AdminPanel({
                   <button
                     type="button"
                     className="admin-step-btn"
-                    onClick={() => handleStepChange(product.key, 'sellOffset', -10)}
-                  >
-                    -10
-                  </button>
-                  <button
-                    type="button"
-                    className="admin-step-btn"
-                    onClick={() => handleStepChange(product.key, 'sellOffset', -50)}
+                    onClick={() =>
+                      handleStepChange(
+                        product.key,
+                        'sellOffset',
+                        -50
+                      )
+                    }
                   >
                     -50
                   </button>
+
                   <button
                     type="button"
                     className="admin-step-btn"
-                    onClick={() => handleStepChange(product.key, 'sellOffset', 10)}
+                    onClick={() =>
+                      handleStepChange(
+                        product.key,
+                        'sellOffset',
+                        -10
+                      )
+                    }
+                  >
+                    -10
+                  </button>
+
+                  <button
+                    type="button"
+                    className="admin-step-btn"
+                    onClick={() =>
+                      handleStepChange(
+                        product.key,
+                        'sellOffset',
+                        10
+                      )
+                    }
                   >
                     +10
                   </button>
+
                   <button
                     type="button"
                     className="admin-step-btn"
-                    onClick={() => handleStepChange(product.key, 'sellOffset', 50)}
+                    onClick={() =>
+                      handleStepChange(
+                        product.key,
+                        'sellOffset',
+                        50
+                      )
+                    }
                   >
                     +50
                   </button>
@@ -245,11 +513,17 @@ function AdminPanel({
             <div className="admin-card-actions">
               <button
                 className="admin-save-btn"
-                onClick={() => handleSave(product.key)}
-                disabled={savingKey === product.key}
+                onClick={() =>
+                  handleSave(product.key)
+                }
+                disabled={
+                  savingKey === product.key
+                }
                 type="button"
               >
-                {savingKey === product.key ? 'Kaydediliyor...' : 'Kaydet'}
+                {savingKey === product.key
+                  ? 'Kaydediliyor...'
+                  : `${selectedStoreTitle} İçin Kaydet`}
               </button>
             </div>
           </div>
@@ -261,23 +535,42 @@ function AdminPanel({
 
         <div className="admin-log-list">
           {logs.length === 0 ? (
-            <p className="admin-log-empty">Henüz log yok.</p>
+            <p className="admin-log-empty">
+              Henüz log yok.
+            </p>
           ) : (
             logs.map((log) => (
-              <div className="admin-log-item" key={log.id}>
+              <div
+                className="admin-log-item"
+                key={log.id}
+              >
                 <div className="admin-log-head">
-                  <strong>{log.product_title}</strong>
-                  <span>{new Date(log.created_at).toLocaleString('tr-TR')}</span>
+                  <strong>
+                    {log.product_title}
+                  </strong>
+
+                  <span>
+                    {new Date(
+                      log.created_at
+                    ).toLocaleString('tr-TR')}
+                  </span>
                 </div>
 
                 <div className="admin-log-body">
                   <p>
-                    Alış: {log.old_buy_offset} → {log.new_buy_offset}
+                    Alış: {log.old_buy_offset} →{' '}
+                    {log.new_buy_offset}
                   </p>
+
                   <p>
-                    Satış: {log.old_sell_offset} → {log.new_sell_offset}
+                    Satış: {log.old_sell_offset} →{' '}
+                    {log.new_sell_offset}
                   </p>
-                  <p>Admin: {log.admin_email || 'Bilinmiyor'}</p>
+
+                  <p>
+                    Admin:{' '}
+                    {log.admin_email || 'Bilinmiyor'}
+                  </p>
                 </div>
               </div>
             ))
